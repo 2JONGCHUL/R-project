@@ -2,17 +2,19 @@
 
 # 2022-09-14
 ```
-#1단계: 작업 디렉토리 설정
+## 1단계: 작업 디렉토리 설정
 #install.packages("studioapi")
 setwd(dirname(rstudioapi::getSourceEditorContext()$path)) #작업폴더 설정
 getwd() #작업폴더 확인 
 ```
 
 
-#2단계 : 수집 대상지역 설정
+## 2단계 : 수집 대상지역 설정
+```
 loc <- read.csv("./sigun_code.csv", fileEncoding = "utf-8") #지역코드
 loc$code <- as.character(loc$code) #행정구역명 문자 별환
-head(loc, 2) #확인 인
+head(loc, 2) #확인
+```
 
 # 2022-09-07
 
