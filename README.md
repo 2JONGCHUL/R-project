@@ -9,12 +9,20 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path)) #작업폴더 설정
 getwd() #작업폴더 확인 
 ```
 
-
 ### 2단계 : 수집 대상지역 설정
 ```
 loc <- read.csv("./sigun_code.csv", fileEncoding = "utf-8") #지역코드
 loc$code <- as.character(loc$code) #행정구역명 문자 별환
 head(loc, 2) #확인
+```
+
+### 3단계 : 수집 기간 설정
+```
+datelist <- seq(from = as.Date('2021-01-01'),
+                to = as.Date('2021-12-31'),
+                by = '1 month')
+datelist <- format(datelist, format = '%Y%m')
+datelist[1:3]
 ```
 
 # 2022-09-07
