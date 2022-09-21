@@ -30,6 +30,11 @@ for(i in 1:nrow(loc)){           # 외부반복: 25개 자치구
   cat(msg, "\n\n") 
 }
 ```
+### 3단계: 요청 목록 동작 확인
+```
+length(url_list)                # 요청목록 갯수 확인
+browseURL(paste0(url_list[1]))  # 정상작동 확인(웹브라우저 실행)
+```
 
 # 2022-09-14
 
