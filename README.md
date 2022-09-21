@@ -35,6 +35,21 @@ for(i in 1:nrow(loc)){           # 외부반복: 25개 자치구
 length(url_list)                # 요청목록 갯수 확인
 browseURL(paste0(url_list[1]))  # 정상작동 확인(웹브라우저 실행)
 ```
+### 1단계: 임시 저장 리스트 생성
+```
+# install.packages("XML")
+# install.packages("data.table")
+# install.packages("stringr")
+
+library(XML)        # install.packages("XML")      
+library(data.table) # install.packages("data.table")
+library(stringr)    # install.packages("stringr")
+
+raw_data <- list()        # xml 임시 저장소
+root_Node <- list()       # 거래내역 추출 임시 저장소
+total <- list()           # 거래내역 정리 임시 저장소
+dir.create("02_raw_data") # 새로운 폴더 만들기
+```
 
 # 2022-09-14
 
