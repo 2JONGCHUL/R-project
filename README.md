@@ -1,7 +1,13 @@
 # 602277124 이종철
 
 # 2022-09-28
-
+## LIMITED NUMBER OF SERVICE REQUESTS EXCEEDS ERROR 에러
+```
+#3단계 : 수집 기간 설정 ( 21-04-30 날짜 수정 100개)
+datelist <- seq(from = as.Date('2021-01-01'),
+                to = as.Date('2021-04-30'),
+              
+```
 ### 2단계: URL 요청 - XML 응답
 ```
 for(i in 1:length(url_list)){   # 요청목록(url_list) 반복
