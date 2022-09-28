@@ -38,6 +38,16 @@ for(i in 1:length(url_list)){   # 요청목록(url_list) 반복
 }
     apt_bind <- rbindlist(item)     # 통합 저장
 ```
+### CSV로 저장
+```
+ region_nm <- subset(loc, code== str_sub(url_list[i],115, 119))$addr_1 # 지역명 추출
+    month <- str_sub(url_list[i],130, 135)   # 연월(YYYYMM) 추출
+    path <- as.character(paste0("./02_raw_data/", region_nm, "_", month,".csv")) # 저장위치 설정
+    write.csv(apt_bind, path)     # csv 저장
+    msg <- paste0("[", i,"/",length(url_list), "] 수집한 데이터를 [", path,"]에 저장 합니다.") # 알림 메시지
+    cat(msg, "\n\n")
+    }   # 바깥쪽 반복문 종료
+```
 
 # 2022-09-21
 ### 인증키 입력 (공공데이터포털 일반 인증키 Encoding)
