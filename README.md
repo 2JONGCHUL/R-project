@@ -2,25 +2,25 @@
 
 # 2022-09-28
 
-## [2단계: URL 요청 - XML 응답]
+### 2단계: URL 요청 - XML 응답
 ```
 for(i in 1:length(url_list)){   # 요청목록(url_list) 반복
   raw_data[[i]] <- xmlTreeParse(url_list[i], useInternalNodes = TRUE,encoding = "utf-8") # 결과 저장
   root_Node[[i]] <- xmlRoot(raw_data[[i]])	# xmlRoot로 추출
  ```
-## [3단계: 전체 거래 건수 확인]
+### 3단계: 전체 거래 건수 확인
 ```
   items <- root_Node[[i]][[2]][['items']]  # 전체 거래내역(items) 추출
   size <- xmlSize(items)                   # 전체 거래 건수 확인    
 ```  
- ## [4단계: 거래 내역 추출]
+ ### 4단계: 거래 내역 추출
  ``` 
   item <- list()  # 전체 거래내역(items) 저장 임시 리스트 생성
   item_temp_dt <- data.table()  # 세부 거래내역(item) 저장 임시 테이블 생성
   Sys.sleep(.1)  # 0.1초 멈춤
   for(m in 1:size){  # 전체 거래건수(size)만큼 반복
   ``` 
-  ## 세부 거래내역 분리
+  ### 세부 거래내역 분리
   ```
     item_temp <- xmlSApply(items[[m]],xmlValue)
     item_temp_dt <- data.table(year = item_temp[4],     # 거래 년 
