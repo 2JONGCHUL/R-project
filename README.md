@@ -1,5 +1,37 @@
 # 602277124 이종철
 
+# 2022-10-05
+## 데이터 100건으로 수정
+```
+datelist <- seq(from = as.Date('2021-01-01'), # 시작
+                to   = as.Date('2021-04-30'), # 종료 100개
+                by    = '1 month')
+```
+## 통합데이터 저장하기
+```
+dir.create("./03_integrated")   # 새로운 폴더 생성
+save(apt_price, file = "./03_integrated/03_apt_price.rdata") # 저장
+write.csv(apt_price, "./03_integrated/03_apt_price.csv") 
+```
+
+## 수집한 데이터 불러오기
+```
+options(warn=-1) -경고 메시지 무시
+table(is.na(apt_price)) - 결측값 False, True 로 확인가능 - True 가 결측값(NA) 갯수
+apt_price <- na.omit(apt_price) - 결측값 제거
+table(is.na(apt_price) - 결측값 확인
+```
+## 문자열 공백 처리
+```
+library(stringr) -> 문자열 처리 패키지
+apt_price <- as.data.frame(apply(apt_price, 2, str_trim)) -> 공백제거( 1이면 행, 2면 열에 적용)(str_trim은 함수)
+```
+## 데이터 변환
+```
+sub(",","",.) -> 쉼표 제거
+as.numeric() -> 문자를 숫자로 변환
+```
+
 # 2022-09-28
 ## LIMITED NUMBER OF SERVICE REQUESTS EXCEEDS ERROR 에러
 ```
