@@ -1,5 +1,34 @@
 # 602277124 이종철
 
+# 2022-10-12
+## 필요한 칼럼 추출하기
+```
+apt_price <- apt_price %>% select(ymd, ym, year, code, addr_1, apt_nm, 
+                                  juso_jibun, price, con_year,  area, floor, py, cnt) # 칼럼 추출
+head(apt_price, 2)  # 확인
+```
+
+## 전처리 데이터 저장하기
+```
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+dir.create("./04_preprocess")   # 새로운 폴더 생성
+save(apt_price, file = "./04_preprocess/04_preprocess.rdata") # 저장
+write.csv(apt_price, "./04_preprocess/04_preprocess.csv") 
+```
+
+## 지오코딩 준비
+```
+1. 카카오 개발자 사이트(developers.kakao.com) 에서 카카오 계정으로 로그인
+2. 내 애플리케이션 클릭
+3. 애플리케이션 추가하기 앱이름, 사업자명 입력후 저장
+4. REST API 키 발급
+```
+
+## 예외처리
+```
+tryCatch({}) 로 예외처리하여 오류가 발생하여도 반복문을 멈추지 않고 다음 반복으로 건너뛰도록함
+```
+
 # 2022-10-05
 ## 데이터 100건으로 수정
 ```
