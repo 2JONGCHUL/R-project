@@ -1,5 +1,75 @@
 # 602277124 이종철
-
+# 2022-11-09
+## [6단계: 클리핑]
+```
+bnd <- st_read("./01_code/sigun_bnd/seoul.shp")    # 서울시 경계선 불러오기
+raster_high <- crop(raster_high, extent(bnd))      # 외곽선 자르기
+crs(raster_high) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 + towgs84=0,0,0") # 좌표계 정의
+plot(raster_high)  # 지도확인
+plot(bnd, col=NA, border = "red", add=TRUE)
+```
+## [7단계: 지도 위에 래스터 이미지 올리기]
+```
+library(rgdal)    # install.packages("rgdal")
+library(leaflet)  # install.packages("leaflet")
+leaflet() %>% 
+  #---# 베이스맵 불러오기
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  #---# 서울시 경계선 불러오기
+  addPolygons(data = bnd, weight = 3, color= "red", fill = NA) %>% 
+  #---# 레스터 이미지 불러오기
+  addRasterImage(raster_high, 
+   colors = colorNumeric(c("blue", "green","yellow","red"), 
+   values(raster_high), na.color = "transparent"), opacity = 0.4) 
+```
+## [8단계: 저장하기]
+```
+dir.create("07_map")  # 새로운 폴더 생성
+save(raster_high, file="./07_map/07_kde_high.rdata") # 저장
+rm(list = ls()) # 메모리 정리  
+```
+## [1단계: 데이터 준비]
+```
+setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # 작업폴더 설정
+load("./06_geodataframe/06_apt_price.rdata")     # 실거래 불러오기
+grid <- st_read("./01_code/sigun_grid/seoul.shp")  # 서울시 1km 그리드 불러오기
+apt_price <-st_join(apt_price, grid, join = st_intersects)  # 실거래 + 그리드 공간결합
+head(apt_price, 2)
+```
+## [2단계: 마커 클러스터링 옵션 설정]
+```
+이상치 설정(하위 10%, 상위 90% 지점)
+pcnt_10 <- as.numeric(quantile(apt_price$py, probs = seq(.1, .9, by = .1))[1])
+pcnt_90 <- as.numeric(quantile(apt_price$py, probs = seq(.1, .9, by = .1))[9])
+마커 클러스터링 함수 등록
+load("./circle_marker/circle_marker.rdata")
+마커 클러스터링 컬러 설정: 상, 중, 하
+circle.colors <- sample(x=c("red","green","blue"),size=1000, replace=TRUE)
+```
+## [3단계: 마커 클러스터링 시각화]  
+```
+library(purrr)  # install.packages("purrr")
+leaflet() %>% 
+   오픈스트리트맵 불러오기
+  addTiles() %>%  
+   서울시 경계선 불러오기
+  addPolygons(data = bnd, weight = 3, color= "red", fill = NA) %>%
+   최고가 레스터 이미지 불러오기
+  addRasterImage(raster_high, 
+                 colors = colorNumeric(c("blue","green","yellow","red"), values(raster_high), 
+                                       na.color = "transparent"), opacity = 0.4, group = "2021 최고가") %>% 
+  급등지 레스터 이미지 불러오기
+  addRasterImage(raster_hot, 
+                 colors = colorNumeric(c("blue", "green", "yellow","red"), values(raster_hot), 
+                                       na.color = "transparent"), opacity = 0.4, group = "2021 급등지") %>%   
+   최고가 / 급등지 선택 옵션 추가하기
+  addLayersControl(baseGroups = c("2021 최고가", "2021 급등지"), options = layersControlOptions(collapsed = FALSE)) %>%
+   마커 클러스터링 불러오기
+  addCircleMarkers(data = apt_price, lng =unlist(map(apt_price$geometry,1)), 
+                   lat = unlist(map(apt_price$geometry,2)), radius = 10, stroke = FALSE, 
+                   fillOpacity = 0.6, fillColor = circle.colors, weight=apt_price$py, 
+                   clusterOptions = markerClusterOptions(iconCreateFunction=JS(avg.formula))) 
+```
 # 2022-11-02
 ## [1단계: 지역별 평균 가격 구하기]
 ```
