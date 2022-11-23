@@ -48,6 +48,43 @@ leaflet() %>%
                    fillOpacity = 0.6, fillColor = circle.colors, weight=apt_price$py, 
                    clusterOptions = markerClusterOptions(iconCreateFunction=JS(avg.formula))) 
 ```
+## [1단계: 그리드 필터링]
+```
+grid <- st_read("./sigun_grid/seoul.shp")       # 그리드 불러오기
+grid <- as(grid, "Spatial") ; grid <- as(grid, "sfc")   # 변환
+grid <- grid[which(sapply(st_contains(st_sf(grid),apt_price),length) > 0)]   # 필터링
+plot(grid)   # 그리드 확인
+```
+## [2단계: 반응형 지도 모듈화]
+```
+m <- leaflet() %>% 
+  #---# 기본 맵 설정: 오픈스트리트맵
+  addTiles(options = providerTileOptions(minZoom = 9, maxZoom = 18)) %>% 
+  #---# 최고가 지역 KDE 
+  addRasterImage(raster_high, 
+                 colors = colorNumeric(c("blue", "green","yellow","red"), 
+                                       values(raster_high), na.color = "transparent"), opacity = 0.4, 
+                 group = "2021 최고가") %>%
+  #---# 급등 지역 KDE 
+  addRasterImage(raster_hot, 
+                 colors = colorNumeric(c("blue", "green","yellow","red"), 
+                                       values(raster_hot), na.color = "transparent"), opacity = 0.4, 
+                 group = "2021 급등지") %>%
+  #---# 레이어 스위치 메뉴
+  addLayersControl(baseGroups = c("2021 최고가", "2021 급등지"),
+                   options = layersControlOptions(collapsed = FALSE)) %>%   
+  #---# 서울시 외곽 경계선
+  addPolygons(data=bnd, weight = 3, stroke = T, color = "red", 
+              fillOpacity = 0) %>%
+  #---# 마커 클러스터링
+  addCircleMarkers(data = apt_price, lng =unlist(map(apt_price$geometry,1)), 
+                   lat = unlist(map(apt_price$geometry,2)), radius = 10, stroke = FALSE, 
+                   fillOpacity = 0.6, fillColor = circle.colors, weight=apt_price$py, 
+                   clusterOptions = markerClusterOptions(iconCreateFunction=JS(avg.formula))) %>%
+  #---# 그리드
+  leafem::addFeatures(st_sf(grid), layerId= ~seq_len(length(grid)), color = 'grey')
+m
+```
 # 2022-11-16
 ##
 ## [1단계: 샤이니 기본구조의 이해]
